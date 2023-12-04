@@ -1,0 +1,65 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: project1
+type: application
+server:
+  customMiddleware:
+    # - name: fiori-tools-proxy
+    #   afterMiddleware: compression
+    #   configuration:
+    #     ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+    #     ui5:
+    #       path:
+    #         - /resources
+    #         - /test-resources
+    #       url: https://ui5.sap.com
+    # - name: ui5-middleware-simpleproxy
+    #   afterMiddleware: compression
+    #   mountPath: /resources
+    #   configuration:
+    #     baseUri: "https://ui5.sap.com"
+    #     # excludePatterns:
+    #     # - "/local/**"
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: project1
+        ui5Theme: sap_fiori_3
+framework:
+  name: SAPUI5
+  version: "1.120.1"
+  libraries:
+    - name: sap.f
+    - name: sap.m
+    - name: sap.suite.ui.generic.template
+    - name: sap.ui.core
+    - name: sap.ui.generic.app
+    - name: sap.ui.layout
+    - name: sap.ui.table
+    - name: sap.ushell
+    - name: themelib_sap_fiori_3
+---
+specVersion: "3.1"
+kind: extension
+type: project-shim
+metadata:
+  name: project1.thirdparty # this can be your project shim name
+shims:
+  configurations:
+    xlsx: # name as defined in package.json
+      specVersion: "3.1"
+      type: module # Use module type
+      metadata:
+        name: xlsx
+      resources:
+        configuration:
+          paths:
+            /lib/thirdparty/xlsx/: ""  # location where modules are stored
